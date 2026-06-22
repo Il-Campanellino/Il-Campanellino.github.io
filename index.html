@@ -120,6 +120,7 @@
             z-index: 1; pointer-events: none; opacity: 0.75;
         }
 
+
         /* THEATRICAL SPOTLIGHTS
            Tecnica: clip-path sul .spotlight-cone definisce la geometria
            del cono (stretto in cima, largo in basso). I layer interni
@@ -502,7 +503,7 @@
         /* SHOWCASE */
         .showcase-section {
             padding: 100px 0; position: relative;
-            background: linear-gradient(to bottom, #070512 0%, #100C24 50%, #070512 100%); z-index: 10;
+            background: transparent; z-index: 10;
         }
         .showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; padding: 0 6%; }
         .showcase-card {
@@ -573,7 +574,7 @@
         /* DOVE OPERIAMO */
         .territory-section {
             padding: 80px 0; position: relative; z-index: 10;
-            background: linear-gradient(to bottom, #070512 0%, #0C0920 100%);
+            background: transparent;
         }
         .territory-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -661,7 +662,7 @@
 
         /* FOOTER */
         footer {
-            background: #04030B; border-top: 1px solid rgba(255, 255, 255, 0.03);
+            background: transparent; border-top: 1px solid rgba(255, 168, 0, 0.15);
             padding: 60px 6% 30px 6%; color: var(--text-muted); font-size: 0.82rem;
             text-align: center; position: relative; z-index: 10;
         }
@@ -1381,6 +1382,37 @@
             document.getElementById('cookie-banner').classList.remove('visible');
         }
         initCookieBanner();
+
+        // LUCE DEL FARETTO — il background si illumina dal giallo del logo man mano che si scende
+        (function() {
+            // Dal nero →  giallo profondo del faretto (versione scura del brand #FFA800)
+            const from = { r: 7,   g: 5,   b: 18 }; // #070512
+            const to   = { r: 122, g: 88,  b: 0  }; // #7A5800 — giallo scuro del logo
+
+            // La luce parte dalla "pozza" del faretto: quando l'utente ha scrollato
+            // circa 80% di un viewport (la base del cono esce dalla vista)
+            const START_PX = Math.round(window.innerHeight * 0.80);
+
+            function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+            function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+            function updateLight() {
+                const maxScroll = document.body.scrollHeight - window.innerHeight;
+                if (maxScroll <= 0) return;
+
+                const scrollPastPool = Math.max(0, window.scrollY - START_PX);
+                const range = maxScroll - START_PX;
+                const raw   = range > 0 ? Math.min(1, scrollPastPool / range) : 0;
+                const eased = easeOutQuart(raw);
+
+                document.body.style.backgroundColor =
+                    `rgb(${lerp(from.r, to.r, eased)},${lerp(from.g, to.g, eased)},${lerp(from.b, to.b, eased)})`;
+            }
+
+            window.addEventListener('scroll', updateLight, { passive: true });
+            window.addEventListener('resize', () => { updateLight(); });
+            updateLight();
+        })();
     </script>
 </body>
 </html>
