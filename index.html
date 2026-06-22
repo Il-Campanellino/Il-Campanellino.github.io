@@ -127,8 +127,7 @@
            usano solo radial-gradient per la distribuzione di luminosità.
            Lampada e pool restano fuori dalla clip → nessun artefatto. */
 
-        .spotlight-wrap,
-        .spotlight-secondary {
+        .spotlight-wrap {
             position: absolute;
             z-index: 2;
             pointer-events: none;
@@ -238,64 +237,6 @@
             filter: blur(22px);
         }
 
-        /* ---- SECONDARIO (magenta, destra) ---- */
-        .spotlight-secondary {
-            top: -30px;
-            right: 8%;
-            width: 330px;
-            height: 88vh;
-            animation: spotlight-sway-r 19s ease-in-out infinite alternate;
-        }
-        @keyframes spotlight-sway-r {
-            0%   { transform: rotate(1.5deg); }
-            100% { transform: rotate(-1.4deg); }
-        }
-        .spotlight-secondary .spotlight-lamp {
-            background: #FFE8F5;
-            box-shadow:
-                0 0 5px  3px  rgba(255, 215, 240, 1.00),
-                0 0 14px 6px  rgba(236, 72,  153, 0.65),
-                0 0 35px 14px rgba(236, 72,  153, 0.30),
-                0 0 70px 26px rgba(236, 72,  153, 0.13);
-        }
-        .spotlight-secondary .spotlight-outer {
-            background: radial-gradient(
-                ellipse 90% 92% at 50% 0%,
-                rgba(236, 72, 153, 0.26) 0%,
-                rgba(236, 72, 153, 0.10) 42%,
-                rgba(236, 72, 153, 0.02) 70%,
-                transparent 100%
-            );
-            filter: blur(24px);
-        }
-        .spotlight-secondary .spotlight-mid {
-            background: radial-gradient(
-                ellipse 62% 88% at 50% 0%,
-                rgba(255, 178, 222, 0.40) 0%,
-                rgba(236, 72,  153, 0.16) 38%,
-                rgba(236, 72,  153, 0.03) 64%,
-                transparent 100%
-            );
-            filter: blur(10px);
-        }
-        .spotlight-secondary .spotlight-inner {
-            background: radial-gradient(
-                ellipse 32% 85% at 50% 0%,
-                rgba(255, 215, 238, 0.58) 0%,
-                rgba(236, 72,  153, 0.22) 28%,
-                rgba(236, 72,  153, 0.05) 55%,
-                transparent 100%
-            );
-            filter: blur(4px);
-        }
-        .spotlight-secondary .spotlight-pool {
-            background: radial-gradient(
-                ellipse at 50% 82%,
-                rgba(236, 72, 153, 0.20) 0%,
-                rgba(236, 72, 153, 0.06) 50%,
-                transparent 100%
-            );
-        }
 
         /* HEADER */
         header {
@@ -773,16 +714,6 @@
     </div>
 
     <!-- Spotlight secondario (destra, magenta) -->
-    <div class="spotlight-secondary">
-        <div class="spotlight-lamp"></div>
-        <div class="spotlight-cone">
-            <div class="spotlight-outer"></div>
-            <div class="spotlight-mid"></div>
-            <div class="spotlight-inner"></div>
-        </div>
-        <div class="spotlight-pool"></div>
-    </div>
-
     <!-- HEADER -->
     <header>
         <a href="#" class="logo-container">
