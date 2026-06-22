@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /leads.json
+
+Sitemap: https://www.ilcampanellino.it/sitemap.xml
