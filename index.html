@@ -121,9 +121,10 @@
         }
 
         /* THEATRICAL SPOTLIGHTS
-           Tecnica: nessun clip-path — il cono è modellato
-           interamente con radial-gradient (ellisse centrata in cima).
-           Così i layer si fondono senza alcun bordo visibile. */
+           Tecnica: clip-path sul .spotlight-cone definisce la geometria
+           del cono (stretto in cima, largo in basso). I layer interni
+           usano solo radial-gradient per la distribuzione di luminosità.
+           Lampada e pool restano fuori dalla clip → nessun artefatto. */
 
         .spotlight-wrap,
         .spotlight-secondary {
@@ -133,30 +134,20 @@
             transform-origin: top center;
         }
 
-        /* Tutti i layer condividono stesse dimensioni del wrapper */
-        .spotlight-outer,
-        .spotlight-mid,
-        .spotlight-inner {
-            position: absolute;
-            top: 30px;
-            left: 0; width: 100%;
-            height: calc(100% - 30px);
-        }
-
         /* ---- PRIMARIO (oro, sinistra) ---- */
         .spotlight-wrap {
             top: -30px;
             left: 14%;
-            width: 460px;
+            width: 480px;
             height: 105vh;
             animation: spotlight-sway 14s ease-in-out infinite alternate;
         }
         @keyframes spotlight-sway {
-            0%   { transform: rotate(-1.3deg); }
-            100% { transform: rotate(1.6deg); }
+            0%   { transform: rotate(-1.4deg); }
+            100% { transform: rotate(1.7deg); }
         }
 
-        /* Sorgente lampada */
+        /* Sorgente lampada — fuori dalla clip, sempre visibile */
         .spotlight-lamp {
             position: absolute;
             top: 30px; left: 50%;
@@ -164,6 +155,7 @@
             width: 8px; height: 8px;
             border-radius: 50%;
             background: #FFFFF8;
+            z-index: 2;
             box-shadow:
                 0 0 5px  3px  rgba(255, 255, 220, 1.00),
                 0 0 14px 6px  rgba(255, 230, 110, 0.80),
@@ -171,68 +163,91 @@
                 0 0 70px 26px rgba(255, 168, 0,   0.20);
         }
 
-        /* Layer esterno: alone ampio (ellisse larga) */
+        /* Cono — geometria a trapezio: 10px in cima, piena larghezza in fondo.
+           Il blur dei layer interni sfuma morbidamente i bordi della clip. */
+        .spotlight-cone {
+            position: absolute;
+            top: 30px; left: 0;
+            width: 100%; height: calc(100% - 30px);
+            clip-path: polygon(
+                calc(50% - 5px) 0%,
+                calc(50% + 5px) 0%,
+                100% 100%,
+                0%   100%
+            );
+        }
+
+        /* Tutti i layer beam riempiono l'intero cone-container */
+        .spotlight-outer,
+        .spotlight-mid,
+        .spotlight-inner {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+
+        /* Layer esterno: alone ampio e caldo — blur sfuma i bordi della clip */
         .spotlight-outer {
             background: radial-gradient(
-                ellipse 58% 88% at 50% 0%,
-                rgba(255, 225, 90,  0.24) 0%,
-                rgba(255, 200, 60,  0.10) 38%,
-                rgba(255, 168, 0,   0.03) 68%,
+                ellipse 90% 95% at 50% 0%,
+                rgba(255, 220, 80,  0.30) 0%,
+                rgba(255, 195, 55,  0.13) 42%,
+                rgba(255, 168, 0,   0.04) 72%,
                 transparent 100%
             );
             filter: blur(22px);
         }
 
-        /* Layer medio: corpo principale del cono */
+        /* Layer medio: corpo luminoso principale */
         .spotlight-mid {
             background: radial-gradient(
-                ellipse 34% 82% at 50% 0%,
-                rgba(255, 245, 160, 0.36) 0%,
-                rgba(255, 220, 95,  0.16) 36%,
-                rgba(255, 175, 30,  0.04) 64%,
+                ellipse 65% 92% at 50% 0%,
+                rgba(255, 248, 160, 0.44) 0%,
+                rgba(255, 222, 95,  0.20) 38%,
+                rgba(255, 178, 32,  0.05) 66%,
                 transparent 100%
             );
-            filter: blur(9px);
+            filter: blur(8px);
         }
 
-        /* Layer interno: nucleo luminoso (ellisse stretta) */
+        /* Layer interno: nucleo brillante al centro */
         .spotlight-inner {
             background: radial-gradient(
-                ellipse 16% 74% at 50% 0%,
-                rgba(255, 255, 235, 0.58) 0%,
-                rgba(255, 240, 145, 0.24) 28%,
-                rgba(255, 195, 50,  0.07) 55%,
+                ellipse 35% 88% at 50% 0%,
+                rgba(255, 255, 240, 0.68) 0%,
+                rgba(255, 242, 150, 0.30) 30%,
+                rgba(255, 200, 55,  0.09) 58%,
                 transparent 100%
             );
-            filter: blur(4px);
+            filter: blur(3px);
         }
 
-        /* Pool a terra */
+        /* Pool a terra — fuori dalla clip, si allarga liberamente */
         .spotlight-pool {
             position: absolute;
             bottom: 0; left: 50%;
             transform: translateX(-50%);
-            width: 130%; height: 110px;
+            width: 140%; height: 120px;
             background: radial-gradient(
-                ellipse at 50% 85%,
-                rgba(255, 215, 75, 0.22) 0%,
-                rgba(255, 168, 0,  0.08) 48%,
+                ellipse at 50% 82%,
+                rgba(255, 215, 75, 0.26) 0%,
+                rgba(255, 168, 0,  0.09) 48%,
                 transparent 100%
             );
-            filter: blur(20px);
+            filter: blur(22px);
         }
 
         /* ---- SECONDARIO (magenta, destra) ---- */
         .spotlight-secondary {
             top: -30px;
             right: 8%;
-            width: 320px;
+            width: 330px;
             height: 88vh;
             animation: spotlight-sway-r 19s ease-in-out infinite alternate;
         }
         @keyframes spotlight-sway-r {
-            0%   { transform: rotate(1.4deg); }
-            100% { transform: rotate(-1.3deg); }
+            0%   { transform: rotate(1.5deg); }
+            100% { transform: rotate(-1.4deg); }
         }
         .spotlight-secondary .spotlight-lamp {
             background: #FFE8F5;
@@ -244,39 +259,39 @@
         }
         .spotlight-secondary .spotlight-outer {
             background: radial-gradient(
-                ellipse 55% 85% at 50% 0%,
-                rgba(236, 72, 153, 0.22) 0%,
-                rgba(236, 72, 153, 0.08) 40%,
-                rgba(236, 72, 153, 0.02) 68%,
+                ellipse 90% 92% at 50% 0%,
+                rgba(236, 72, 153, 0.26) 0%,
+                rgba(236, 72, 153, 0.10) 42%,
+                rgba(236, 72, 153, 0.02) 70%,
                 transparent 100%
             );
             filter: blur(24px);
         }
         .spotlight-secondary .spotlight-mid {
             background: radial-gradient(
-                ellipse 32% 80% at 50% 0%,
-                rgba(255, 175, 220, 0.34) 0%,
-                rgba(236, 72,  153, 0.13) 36%,
-                rgba(236, 72,  153, 0.03) 62%,
+                ellipse 62% 88% at 50% 0%,
+                rgba(255, 178, 222, 0.40) 0%,
+                rgba(236, 72,  153, 0.16) 38%,
+                rgba(236, 72,  153, 0.03) 64%,
                 transparent 100%
             );
             filter: blur(10px);
         }
         .spotlight-secondary .spotlight-inner {
             background: radial-gradient(
-                ellipse 15% 72% at 50% 0%,
-                rgba(255, 210, 235, 0.52) 0%,
-                rgba(236, 72,  153, 0.18) 28%,
-                rgba(236, 72,  153, 0.04) 54%,
+                ellipse 32% 85% at 50% 0%,
+                rgba(255, 215, 238, 0.58) 0%,
+                rgba(236, 72,  153, 0.22) 28%,
+                rgba(236, 72,  153, 0.05) 55%,
                 transparent 100%
             );
-            filter: blur(5px);
+            filter: blur(4px);
         }
         .spotlight-secondary .spotlight-pool {
             background: radial-gradient(
-                ellipse at 50% 85%,
-                rgba(236, 72, 153, 0.16) 0%,
-                rgba(236, 72, 153, 0.05) 50%,
+                ellipse at 50% 82%,
+                rgba(236, 72, 153, 0.20) 0%,
+                rgba(236, 72, 153, 0.06) 50%,
                 transparent 100%
             );
         }
@@ -748,18 +763,22 @@
     <!-- Spotlight teatrale primario (sinistra, oro) -->
     <div class="spotlight-wrap">
         <div class="spotlight-lamp"></div>
-        <div class="spotlight-outer"></div>
-        <div class="spotlight-mid"></div>
-        <div class="spotlight-inner"></div>
+        <div class="spotlight-cone">
+            <div class="spotlight-outer"></div>
+            <div class="spotlight-mid"></div>
+            <div class="spotlight-inner"></div>
+        </div>
         <div class="spotlight-pool"></div>
     </div>
 
     <!-- Spotlight secondario (destra, magenta) -->
     <div class="spotlight-secondary">
         <div class="spotlight-lamp"></div>
-        <div class="spotlight-outer"></div>
-        <div class="spotlight-mid"></div>
-        <div class="spotlight-inner"></div>
+        <div class="spotlight-cone">
+            <div class="spotlight-outer"></div>
+            <div class="spotlight-mid"></div>
+            <div class="spotlight-inner"></div>
+        </div>
         <div class="spotlight-pool"></div>
     </div>
 
